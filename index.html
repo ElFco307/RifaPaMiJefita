@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa pa mi jefita</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/ticket.png">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div id="titulo">
+            RIFA PA MI JEFITA
+        </div>
+
+        <nav class="btn-group" id="menu">
+            <a href="index.html" class="button" name="btnInicio">INICIO</a>
+            <a href="info.html" class="button" name="btnInfo">INFO</a>
+            <a href="rifa.html" class="button" name="btnRifa">RIFA</a>
+            <a href="actualizaciones.html" class="button" name="btnActualizaciones">ACTUALIZACIONES</a>
+            <button class="button" name="btnContacto" id="btnContacto">CONTACTO</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="contenedor-foto">
+            <div class="imagen-con-texto">
+                <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format" alt="Foto decorativa" class="foto-principal">
+                <div class="texto-sobre-imagen" id="mensaje-flotante">
+                    Ayudame a que esto se haga posible
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="info-creador">
+            <p>Creado por Francisco Antonio Salgado Leyva</p>
+            <p>© 2026 Rifa pa mi jefita</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Contacto -->
+    <div id="modalContacto" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Información de Contacto</h2>
+                <span class="cerrar-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Francisco Antonio Salgado Leyva</strong></p>
+                <p>📱 WhatsApp: 6462616970</p>
+                <p>📧 Correo: tonyjuacker@gmail.com</p>
+                <p>📷 Instagram: me.dicen.tono</p>
+            </div>
+            <div class="modal-footer">
+                <button class="boton-cerrar">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script simple solo para el modal de contacto
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('modalContacto');
+            const btnContacto = document.getElementById('btnContacto');
+            const btnCerrar = document.querySelector('.cerrar-modal');
+            const btnCerrarFooter = document.querySelector('.boton-cerrar');
+
+            // Abrir modal
+            btnContacto.onclick = function(event) {
+                event.preventDefault();
+                modal.style.display = 'block';
+            }
+
+            // Cerrar modal con la X
+            btnCerrar.onclick = function() {
+                modal.style.display = 'none';
+            }
+
+            // Cerrar modal con el botón del footer
+            btnCerrarFooter.onclick = function() {
+                modal.style.display = 'none';
+            }
+
+            // Cerrar modal haciendo clic fuera del contenido
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

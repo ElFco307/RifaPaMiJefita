@@ -1,0 +1,199 @@
+/* Estilos específicos para la página de información */
+.info-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.info-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.info-header h1 {
+    color: #0081cc;
+    font-size: 36px;
+    margin-bottom: 15px;
+    border-bottom: 3px solid #0081cc;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+.info-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.info-text {
+    flex: 1;
+    min-width: 300px;
+}
+
+.info-text p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+.info-text p.important {
+    background-color: #fff3cd;
+    border-left: 5px solid #0081cc;
+    padding: 20px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.info-image {
+    flex: 1;
+    min-width: 300px;
+    text-align: center;
+}
+
+.info-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    border: 4px solid #0081cc;
+}
+
+.info-image img:hover {
+    transform: scale(1.02);
+}
+
+.info-image figcaption {
+    margin-top: 15px;
+    font-style: italic;
+    color: #666;
+    font-size: 16px;
+}
+
+.info-section {
+    margin-top: 50px;
+    padding: 30px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf1 100%);
+    border-radius: 15px;
+}
+
+.info-section h2 {
+    color: #0081cc;
+    font-size: 28px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-section h2:before {
+    content: "🎯";
+    font-size: 32px;
+}
+
+.info-section p {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+.objetivos-list {
+    list-style: none;
+    padding: 0;
+}
+
+.objetivos-list li {
+    font-size: 18px;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.2s;
+}
+
+.objetivos-list li:hover {
+    transform: translateX(10px);
+    box-shadow: 0 5px 15px rgba(0,129,204,0.2);
+}
+
+.objetivos-list li:before {
+    content: "✓";
+    color: white;
+    background-color: #0081cc;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.instagram-info {
+    background-color: #0081cc;
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.instagram-info p {
+    font-size: 20px;
+    margin: 10px 0;
+    color: white;
+}
+
+.instagram-info strong {
+    font-size: 24px;
+    background: rgba(255,255,255,0.2);
+    padding: 8px 20px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+/* Responsive design para info */
+@media (max-width: 768px) {
+    .info-container {
+        padding: 20px;
+    }
+    
+    .info-header h1 {
+        font-size: 28px;
+    }
+    
+    .info-text p {
+        font-size: 16px;
+    }
+    
+    .info-section h2 {
+        font-size: 24px;
+    }
+    
+    .objetivos-list li {
+        font-size: 16px;
+    }
+    
+    .instagram-info p {
+        font-size: 18px;
+    }
+    
+    .instagram-info strong {
+        font-size: 20px;
+    }
+}

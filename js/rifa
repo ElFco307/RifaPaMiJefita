@@ -1,0 +1,215 @@
+// Datos de la rifa
+let numerosRifa = new Array(600).fill(null);
+
+// Datos de ejemplo para probar (ahora con más variedad)
+numerosRifa[4] = { nombre: "Juan Pérez", correo: "juan@email.com", numeroTelefono: "6461234567" };
+numerosRifa[27] = { nombre: "María García", correo: "maria@email.com", numeroTelefono: "6467654321" };
+numerosRifa[128] = { nombre: "Pedro López", correo: "pedro@email.com", numeroTelefono: "6469876543" };
+numerosRifa[255] = { nombre: "Ana Martínez", correo: "ana@email.com", numeroTelefono: "6463456789" };
+numerosRifa[300] = { nombre: "Juan Pérez", correo: "juan2@email.com", numeroTelefono: "6461112222" };
+numerosRifa[456] = { nombre: "Carlos Rodríguez", correo: "carlos@email.com", numeroTelefono: "6463334444" };
+numerosRifa[512] = { nombre: "María García", correo: "maria2@email.com", numeroTelefono: "6465556666" };
+
+// Configuración de paginación
+const numerosPorPagina = 50;
+let paginaActual = 1;
+const totalPaginas = Math.ceil(600 / numerosPorPagina);
+
+// Función para renderizar los números de la página actual
+function renderizarNumeros() {
+    const numerosGrid = document.getElementById('numerosGrid');
+    if (!numerosGrid) return;
+    
+    const inicio = (paginaActual - 1) * numerosPorPagina;
+    const fin = inicio + numerosPorPagina;
+    
+    numerosGrid.innerHTML = '';
+    
+    for (let i = inicio; i < fin; i++) {
+        const numero = i + 1;
+        const vendido = numerosRifa[i] !== null;
+        
+        const numeroDiv = document.createElement('div');
+        numeroDiv.className = `numero-item ${vendido ? 'vendido' : ''}`;
+        numeroDiv.textContent = numero;
+        numeroDiv.setAttribute('data-numero', numero);
+        
+        if (vendido) {
+            numeroDiv.title = `Vendido a: ${numerosRifa[i].nombre}`;
+        }
+        
+        numerosGrid.appendChild(numeroDiv);
+    }
+    
+    // Actualizar botones de paginación
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    const paginaActualSpan = document.getElementById('paginaActual');
+    
+    if (btnAnterior) btnAnterior.disabled = paginaActual === 1;
+    if (btnSiguiente) btnSiguiente.disabled = paginaActual === totalPaginas;
+    if (paginaActualSpan) paginaActualSpan.textContent = `Página ${paginaActual} de ${totalPaginas}`;
+}
+
+// Función para buscar por nombre
+function buscarPorNombre() {
+    const buscadorInput = document.getElementById('buscadorNombre');
+    if (!buscadorInput) return;
+    
+    const nombre = buscadorInput.value.trim();
+    if (!nombre) {
+        alert('Por favor ingresa un nombre para buscar');
+        return;
+    }
+    
+    const resultados = [];
+    const nombreBusqueda = nombre.toLowerCase();
+    
+    numerosRifa.forEach((item, index) => {
+        if (item && item.nombre.toLowerCase().includes(nombreBusqueda)) {
+            resultados.push({
+                numero: index + 1,
+                ...item
+            });
+        }
+    });
+    
+    mostrarResultadosBusqueda(resultados, nombre);
+}
+
+// Función para mostrar resultados de búsqueda en modal
+function mostrarResultadosBusqueda(resultados, nombreBuscado) {
+    const resultadosBusqueda = document.getElementById('resultadosBusqueda');
+    if (!resultadosBusqueda) return;
+    
+    resultadosBusqueda.innerHTML = '';
+    
+    if (resultados.length === 0) {
+        resultadosBusqueda.innerHTML = `<p style="text-align: center; color: #666; padding: 20px;">No se encontraron resultados para "${nombreBuscado}"</p>`;
+    } else {
+        const titulo = document.createElement('p');
+        titulo.style.marginBottom = '15px';
+        titulo.style.fontWeight = 'bold';
+        titulo.style.padding = '10px';
+        titulo.textContent = `Se encontraron ${resultados.length} número(s) para "${nombreBuscado}":`;
+        resultadosBusqueda.appendChild(titulo);
+        
+        resultados.forEach(resultado => {
+            const resultadoDiv = document.createElement('div');
+            resultadoDiv.className = 'resultado-item';
+            resultadoDiv.innerHTML = `
+                <p><strong>Número:</strong> ${resultado.numero}</p>
+                <p><strong>Nombre:</strong> ${resultado.nombre}</p>
+                <p><strong>Correo:</strong> ${resultado.correo}</p>
+                <p><strong>Teléfono:</strong> ${resultado.numeroTelefono}</p>
+            `;
+            resultadosBusqueda.appendChild(resultadoDiv);
+        });
+    }
+    
+    const modalBusqueda = document.getElementById('modalBusqueda');
+    if (modalBusqueda) {
+        modalBusqueda.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Funciones para cerrar modales
+window.cerrarModalBusqueda = function() {
+    const modalBusqueda = document.getElementById('modalBusqueda');
+    if (modalBusqueda) {
+        modalBusqueda.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+window.cerrarModalComprar = function() {
+    const modalComprar = document.getElementById('modalComprar');
+    if (modalComprar) {
+        modalComprar.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Función para copiar CLABE
+function copiarCLABE() {
+    const clabe = '722969040840323724';
+    navigator.clipboard.writeText(clabe).then(() => {
+        alert('¡CLABE copiada al portapapeles!');
+    }).catch(() => {
+        alert('Error al copiar. Por favor copia manualmente: 722969040840323724');
+    });
+}
+
+// Inicializar todo cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Página de rifa cargada');
+    
+    // Renderizar números iniciales
+    renderizarNumeros();
+    
+    // Event listeners para paginación
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    const btnBuscar = document.getElementById('btnBuscar');
+    const buscadorInput = document.getElementById('buscadorNombre');
+    const btnComprar = document.getElementById('btnComprar');
+    const btnCopiarClabe = document.getElementById('btnCopiarClabe');
+    
+    if (btnAnterior) {
+        btnAnterior.addEventListener('click', function() {
+            if (paginaActual > 1) {
+                paginaActual--;
+                renderizarNumeros();
+            }
+        });
+    }
+    
+    if (btnSiguiente) {
+        btnSiguiente.addEventListener('click', function() {
+            if (paginaActual < totalPaginas) {
+                paginaActual++;
+                renderizarNumeros();
+            }
+        });
+    }
+    
+    if (btnBuscar) {
+        btnBuscar.addEventListener('click', buscarPorNombre);
+    }
+    
+    if (buscadorInput) {
+        buscadorInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                buscarPorNombre();
+            }
+        });
+    }
+    
+    if (btnComprar) {
+        btnComprar.addEventListener('click', function() {
+            const modalComprar = document.getElementById('modalComprar');
+            if (modalComprar) {
+                modalComprar.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    }
+    
+    if (btnCopiarClabe) {
+        btnCopiarClabe.addEventListener('click', copiarCLABE);
+    }
+    
+    // Cerrar modales haciendo clic fuera
+    window.addEventListener('click', function(event) {
+        const modalBusqueda = document.getElementById('modalBusqueda');
+        const modalComprar = document.getElementById('modalComprar');
+        
+        if (event.target === modalBusqueda) {
+            cerrarModalBusqueda();
+        }
+        if (event.target === modalComprar) {
+            cerrarModalComprar();
+        }
+    });
+});

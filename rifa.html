@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rifa - Rifa pa mi jefita</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/ticket.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Estilos directamente aquí para asegurar que funcionen */
+        .rifa-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .rifa-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .rifa-header h1 {
+            color: #0081cc;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .buscador-container {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+
+        .buscador-input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .buscador-btn {
+            background-color: #0081cc;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .comprar-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .comprar-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .numeros-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .numero-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: white;
+            border: 2px solid #0081cc;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .numero-item.vendido {
+            background-color: #f8f8f8;
+            border-color: #dc3545;
+            color: #999;
+        }
+
+        .numero-item.vendido::before,
+        .numero-item.vendido::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #dc3545;
+            top: 50%;
+            left: 0;
+        }
+
+        .numero-item.vendido::before {
+            transform: rotate(45deg);
+        }
+
+        .numero-item.vendido::after {
+            transform: rotate(-45deg);
+        }
+
+        .paginacion {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .paginacion-btn {
+            background-color: #0081cc;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .paginacion-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        overflow-y: auto; /* Permite hacer scroll en el fondo si es necesario */
+    }
+
+    .modal-contenido {
+        background-color: #fefefe;
+        margin: 20px auto; /* Margen superior más pequeño para que se vea mejor */
+        padding: 0;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 15px;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        /* Altura máxima y scroll interno */
+        max-height: 90vh; /* 90% de la altura de la pantalla */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-header {
+        background-color: #0081cc;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 15px 15px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0; /* Evita que el header se encoja */
+    }
+
+    .modal-body {
+        padding: 20px;
+        background-color: white;
+        overflow-y: auto; /* ¡ESTA ES LA CLAVE! - Hace scroll solo en el cuerpo */
+        max-height: 60vh; /* Altura máxima para el cuerpo */
+    }
+
+    .modal-footer {
+        padding: 15px 20px;
+        background-color: #f0f0f0;
+        border-radius: 0 0 15px 15px;
+        text-align: center;
+        flex-shrink: 0; /* Evita que el footer se encoja */
+    }
+
+    /* Mejoras para el contenido del modal de compra */
+    .modal-body h3 {
+        color: #0081cc;
+        margin: 15px 0 10px 0;
+        font-size: 18px;
+        border-bottom: 2px solid #0081cc;
+        padding-bottom: 5px;
+    }
+
+    .modal-body h3:first-of-type {
+        margin-top: 0;
+    }
+
+    .modal-body p {
+        margin: 8px 0;
+        line-height: 1.4;
+    }
+
+    .clabe-box {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background-color: #f5f5f5;
+        padding: 12px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+    }
+
+    .clabe-box code {
+        font-size: 14px;
+        font-family: monospace;
+        word-break: break-all; /* Para que no se desborde en móviles */
+    }
+
+    .btn-copiar {
+        background-color: #0081cc;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        white-space: nowrap; /* Evita que el texto del botón se rompa */
+    }
+
+    .btn-copiar:hover {
+        background-color: #00c4ff;
+    }
+
+    .modal-body ol {
+        margin: 10px 0;
+        padding-left: 25px;
+    }
+
+    .modal-body li {
+        margin: 8px 0;
+        line-height: 1.4;
+    }
+
+    /* Para pantallas más pequeñas */
+    @media (max-width: 768px) {
+        .modal-contenido {
+            margin: 10px auto;
+            max-height: 95vh;
+        }
+        
+        .modal-body {
+            max-height: 70vh;
+            padding: 15px;
+        }
+        
+        .clabe-box {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .btn-copiar {
+            width: 100%;
+        }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="titulo">
+            RIFA PA MI JEFITA
+        </div>
+
+        <nav class="btn-group" id="menu">
+            <a href="index.html" class="button">INICIO</a>
+            <a href="info.html" class="button">INFO</a>
+            <a href="rifa.html" class="button">RIFA</a>
+            <a href="actualizaciones.html" class="button">ACTUALIZACIONES</a>
+            <button class="button" id="btnContacto">CONTACTO</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="rifa-container">
+            <div class="rifa-header">
+                <h1>Números de la Rifa</h1>
+                <p>Del 1 al 600 - $100 pesos cada número</p>
+            </div>
+
+            <div class="buscador-container">
+                <input type="text" id="buscadorNombre" placeholder="Buscar por nombre..." class="buscador-input">
+                <button id="btnBuscar" class="buscador-btn">Buscar</button>
+            </div>
+
+            <div class="comprar-container">
+                <button id="btnComprar" class="comprar-btn">🎫 Comprar número</button>
+            </div>
+
+            <!-- Grid de números -->
+            <div id="numerosGrid" class="numeros-grid"></div>
+
+            <!-- Paginación -->
+            <div class="paginacion">
+                <button id="btnAnterior" class="paginacion-btn" disabled>← Anterior</button>
+                <span id="paginaActual">Página 1 de 12</span>
+                <button id="btnSiguiente" class="paginacion-btn">Siguiente →</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="info-creador">
+            <p>Creado por Francisco Antonio Salgado Leyva</p>
+            <p>© 2026 Rifa pa mi jefita</p>
+        </div>
+    </footer>
+
+    <!-- Modal Contacto -->
+    <div id="modalContacto" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Contacto</h2>
+                <span class="cerrar-modal" onclick="document.getElementById('modalContacto').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Francisco Antonio Salgado Leyva</strong></p>
+                <p>WhatsApp: 6462616970</p>
+                <p>Correo: tonyjuacker@gmail.com</p>
+                <p>Instagram: me.dicen.tono</p>
+            </div>
+            <div class="modal-footer">
+                <button class="boton-cerrar" onclick="document.getElementById('modalContacto').style.display='none'">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Búsqueda -->
+    <div id="modalBusqueda" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Resultados</h2>
+                <span class="cerrar-modal" onclick="document.getElementById('modalBusqueda').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body" id="resultadosBusqueda"></div>
+            <div class="modal-footer">
+                <button class="boton-cerrar" onclick="document.getElementById('modalBusqueda').style.display='none'">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Comprar -->
+    <div id="modalComprar" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Comprar número</h2>
+                <span class="cerrar-modal" onclick="document.getElementById('modalComprar').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <span style="font-size: 24px; font-weight: bold; color: #0081cc;">$100 pesos</span>
+                    <span style="font-size: 16px; color: #666;"> por número</span>
+                </div>
+                
+                <h3>📱 Contacto</h3>
+                <p><strong>WhatsApp:</strong> 6462616970</p>
+                <p><strong>Instagram:</strong> me.dicen.tono</p>
+                <p><strong>Instagram rifa:</strong> rifa.pa.mi.jefita</p>
+                
+                <h3>🏦 Datos bancarios</h3>
+                <div class="clabe-box">
+                    <code>7229 6904 0840 3237 24</code>
+                    <button class="btn-copiar" onclick="copiarCLABE()">📋 Copiar CLABE</button>
+                </div>
+                <p><strong>Banco:</strong> MercadoPago (STP)</p>
+                <p><strong>Nombre:</strong> Francisco Salgado</p>
+                <p><strong>Concepto:</strong> Rifa</p>
+                
+                <h3>📝 Instrucciones</h3>
+                <ol>
+                    <li>Contáctame por WhatsApp o Instagram para confirmar disponibilidad</li>
+                    <li>Realiza la transferencia por $100 pesos por número</li>
+                    <li>Envía el comprobante de pago</li>
+                    <li>Indica qué número(s) deseas apartar</li>
+                    <li>¡Recibirás confirmación y tu número será marcado como vendido!</li>
+                </ol>
+                
+                <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin-top: 15px; border-radius: 5px;">
+                    <p style="margin: 0; color: #856404;">
+                        <strong>Nota:</strong> Una vez confirmado el pago, tu número será apartado y aparecerá como vendido en la lista.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="boton-cerrar" onclick="document.getElementById('modalComprar').style.display='none'">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== DATOS DE LA RIFA ==========
+        let numerosRifa = new Array(600).fill(null);
+
+        // DATOS REALES DE COMPRADORES (proporcionados)
+        // Alberto Morales
+        numerosRifa[484] = { nombre: "Alberto Morales", correo: "albermr25@gmail.com", numeroTelefono: "6462071255" }; // número 485 (índice 484)
+        numerosRifa[56] = { nombre: "Alberto Morales", correo: "albermr25@gmail.com", numeroTelefono: "6462071255" };  // número 57 (índice 56)
+        numerosRifa[351] = { nombre: "Alberto Morales", correo: "albermr25@gmail.com", numeroTelefono: "6462071255" }; // número 352 (índice 351)
+        numerosRifa[159] = { nombre: "Alberto Morales", correo: "albermr25@gmail.com", numeroTelefono: "6462071255" }; // número 160 (índice 159)
+        numerosRifa[90] = { nombre: "Alberto Morales", correo: "albermr25@gmail.com", numeroTelefono: "6462071255" };  // número 91 (índice 90)
+        numerosRifa[330] = { nombre: "Alberto Morales", correo: "albermr25@gmail.com", numeroTelefono: "6462071255" }; // número 331 (índice 330)
+        numerosRifa[350] = { nombre: "Alberto Morales", correo: "albermr25@gmail.com", numeroTelefono: "6462071255" }; // número 351 (índice 350)
+
+        // Ismael Cossio
+        numerosRifa[102] = { nombre: "Ismael Cossio", correo: "juancossio9@gmail.com", numeroTelefono: "6461027191" }; // número 103 (índice 102)
+        numerosRifa[448] = { nombre: "Ismael Cossio", correo: "juancossio9@gmail.com", numeroTelefono: "6461027191" }; // número 449 (índice 448)
+        numerosRifa[443] = { nombre: "Ismael Cossio", correo: "juancossio9@gmail.com", numeroTelefono: "6461027191" }; // número 444 (índice 443)
+
+        // Angelina Burgoin
+        numerosRifa[506] = { nombre: "Angelina Burgoin", correo: "burgoin241@gmail.com", numeroTelefono: "6462765264" }; // número 507 (índice 506)
+
+        // Caleb Guevara
+        numerosRifa[6] = { nombre: "Caleb Guevara", correo: "tabubernal28@gmail.com", numeroTelefono: "6461877088" };  // número 7 (índice 6)
+        numerosRifa[9] = { nombre: "Caleb Guevara", correo: "tabubernal28@gmail.com", numeroTelefono: "6461877088" };  // número 10 (índice 9)
+
+        // Carlos Castro (sin correo ni teléfono)
+        numerosRifa[55] = { nombre: "Carlos Castro", correo: "", numeroTelefono: "" }; // número 56 (índice 55)
+
+        // Rey Hernandez
+        numerosRifa[0] = { nombre: "Rey Hernandez", correo: "rey.hernandez27@uabc.edu.mx", numeroTelefono: "6861687100" }; // número 1 (índice 0)
+        numerosRifa[13] = { nombre: "Rey Hernandez", correo: "rey.hernandez27@uabc.edu.mx", numeroTelefono: "6861687100" }; // número 14 (índice 13)
+        numerosRifa[30] = { nombre: "Rey Hernandez", correo: "rey.hernandez27@uabc.edu.mx", numeroTelefono: "6861687100" }; // número 31 (índice 30)
+
+        // Enrique Celis
+        numerosRifa[310] = { nombre: "Enrique Celis", correo: "enriquedino8@gmail.com", numeroTelefono: "6461907613" }; // número 311 (índice 310)
+        numerosRifa[256] = { nombre: "Enrique Celis", correo: "enriquedino8@gmail.com", numeroTelefono: "6461907613" }; // número 257 (índice 256)
+
+        // Adela Flores
+        numerosRifa[5] = { nombre: "Adela Flores", correo: "addelaf699@gmail.com", numeroTelefono: "6161094446" }; // número 6 (índice 5)
+        numerosRifa[8] = { nombre: "Adela Flores", correo: "addelaf699@gmail.com", numeroTelefono: "6161094446" }; // número 9 (índice 8)
+
+        // Fernanda Migoni
+        numerosRifa[26] = { nombre: "Fernanda Migoni", correo: "fernandamigoni11@gmail.com", numeroTelefono: "6461355564" }; // número 27 (índice 26)
+
+        // Mara Sofia y Rafaela Padilla (mismo correo)
+        numerosRifa[1] = { nombre: "Mara Sofia", correo: "mara.cardenas@uabc.edu.mx", numeroTelefono: "6461988648" }; // número 2 (índice 1)
+        numerosRifa[20] = { nombre: "Rafaela Padilla", correo: "mara.cardenas@uabc.edu.mx", numeroTelefono: "6461988648" }; // número 21 (índice 20)
+
+        // Juan Jose Lopez
+        numerosRifa[283] = { nombre: "Juan Jose Lopez", correo: "josejuan140898@gmail.com", numeroTelefono: "6461923384" }; // número 284 (índice 283)
+
+        // Kenia Peña
+        numerosRifa[27] = { nombre: "Kenia Peña", correo: "keniacpt30@gmail.com", numeroTelefono: "6462494356" }; // número 28 (índice 27)
+        numerosRifa[17] = { nombre: "Kenia Peña", correo: "keniacpt30@gmail.com", numeroTelefono: "6462494356" }; // número 18 (índice 17)
+
+        // Adrian Salmeron
+        numerosRifa[7] = { nombre: "Adrian Salmeron", correo: "angeladriansalmeron@gmail.com", numeroTelefono: "6462729533" }; // número 8 (índice 7)
+
+        // Damaris Ramirez
+        numerosRifa[76] = { nombre: "Damaris Ramirez", correo: "damarisss32156@gmail.com", numeroTelefono: "6161197424" }; // número 77 (índice 76)
+        numerosRifa[23] = { nombre: "Damaris Ramirez", correo: "damarisss32156@gmail.com", numeroTelefono: "6161197424" }; // número 24 (índice 23)
+
+        // Alberto Moran
+        numerosRifa[542] = { nombre: "Alberto Moran", correo: "al2005@gmail.com", numeroTelefono: "6461179654" }; // número 543 (índice 542)
+
+        // Alberto Balderas (sin teléfono)
+        numerosRifa[545] = { nombre: "Alberto Balderas", correo: "albertob.rmarzo@gmail.com", numeroTelefono: "" }; // número 546 (índice 545)
+        numerosRifa[346] = { nombre: "Alberto Balderas", correo: "albertob.rmarzo@gmail.com", numeroTelefono: "" }; // número 347 (índice 346)
+
+        // Amarandy Briceño
+        numerosRifa[586] = { nombre: "Amarandy Briceño", correo: "airams150616@gmail.com", numeroTelefono: "6462077596" }; // número 587 (índice 586)
+
+        // Axel Catalan
+        numerosRifa[25] = { nombre: "Axel Catalan", correo: "catalan26reyes@gmail.com", numeroTelefono: "6862128244" }; // número 26 (índice 25)
+
+        console.log("Datos cargados:", numerosRifa.filter(item => item !== null).length, "números vendidos");
+        
+        // ========== VARIABLES GLOBALES ==========
+        const numerosPorPagina = 50;
+        let paginaActual = 1;
+        const totalPaginas = Math.ceil(600 / numerosPorPagina);
+        
+        // ========== FUNCIÓN PARA MOSTRAR NÚMEROS ==========
+        function mostrarNumeros() {
+            console.log("Mostrando números, página:", paginaActual);
+            
+            const grid = document.getElementById('numerosGrid');
+            if (!grid) {
+                console.error("No se encontró el grid");
+                return;
+            }
+            
+            grid.innerHTML = '';
+            
+            const inicio = (paginaActual - 1) * numerosPorPagina;
+            const fin = inicio + numerosPorPagina;
+            
+            for (let i = inicio; i < fin; i++) {
+                const numero = i + 1;
+                const vendido = numerosRifa[i] !== null;
+                
+                const div = document.createElement('div');
+                div.className = 'numero-item' + (vendido ? ' vendido' : '');
+                div.textContent = numero;
+                
+                if (vendido) {
+                    div.title = `Vendido a: ${numerosRifa[i].nombre}`;
+                }
+                
+                grid.appendChild(div);
+            }
+            
+            // Actualizar botones
+            document.getElementById('btnAnterior').disabled = (paginaActual === 1);
+            document.getElementById('btnSiguiente').disabled = (paginaActual === totalPaginas);
+            document.getElementById('paginaActual').textContent = `Página ${paginaActual} de ${totalPaginas}`;
+        }
+        
+        // ========== FUNCIÓN DE BÚSQUEDA ==========
+        function buscarNombre() {
+            const input = document.getElementById('buscadorNombre');
+            if (!input) return;
+            
+            const nombre = input.value.trim();
+            if (!nombre) {
+                alert('Ingresa un nombre');
+                return;
+            }
+            
+            const resultados = [];
+            const busqueda = nombre.toLowerCase();
+            
+            for (let i = 0; i < numerosRifa.length; i++) {
+                if (numerosRifa[i] && numerosRifa[i].nombre.toLowerCase().includes(busqueda)) {
+                    resultados.push({
+                        numero: i + 1,
+                        ...numerosRifa[i]
+                    });
+                }
+            }
+            
+            // Mostrar resultados en modal
+            const divResultados = document.getElementById('resultadosBusqueda');
+            if (resultados.length === 0) {
+                divResultados.innerHTML = `<p>No se encontraron resultados para "${nombre}"</p>`;
+            } else {
+                let html = `<p><strong>Se encontraron ${resultados.length} resultado(s):</strong></p>`;
+                resultados.forEach(r => {
+                    html += `
+                        <div style="border-left: 4px solid #0081cc; padding: 10px; margin: 10px 0; background: #f5f5f5;">
+                            <p><strong>Número:</strong> ${r.numero}</p>
+                            <p><strong>Nombre:</strong> ${r.nombre}</p>
+                            <p><strong>Correo:</strong> ${r.correo}</p>
+                            <p><strong>Teléfono:</strong> ${r.numeroTelefono}</p>
+                        </div>
+                    `;
+                });
+                divResultados.innerHTML = html;
+            }
+            
+            document.getElementById('modalBusqueda').style.display = 'block';
+        }
+        
+        // ========== FUNCIÓN PARA COPIAR CLABE ==========
+        window.copiarCLABE = function() {
+            const clabe = '722969040840323724';
+            navigator.clipboard.writeText(clabe).then(() => {
+                alert('CLABE copiada');
+            }).catch(() => {
+                alert('Error al copiar');
+            });
+        }
+        
+        // ========== EVENT LISTENERS ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Página cargada");
+            
+            // Mostrar números
+            mostrarNumeros();
+            
+            // Botones de paginación
+            document.getElementById('btnAnterior').addEventListener('click', function() {
+                if (paginaActual > 1) {
+                    paginaActual--;
+                    mostrarNumeros();
+                }
+            });
+            
+            document.getElementById('btnSiguiente').addEventListener('click', function() {
+                if (paginaActual < totalPaginas) {
+                    paginaActual++;
+                    mostrarNumeros();
+                }
+            });
+            
+            // Botón buscar
+            document.getElementById('btnBuscar').addEventListener('click', buscarNombre);
+            
+            // Buscar con Enter
+            document.getElementById('buscadorNombre').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') buscarNombre();
+            });
+            
+            // Botón comprar
+            document.getElementById('btnComprar').addEventListener('click', function() {
+                document.getElementById('modalComprar').style.display = 'block';
+            });
+            
+            // Botón contacto
+            document.getElementById('btnContacto').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('modalContacto').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizaciones - Rifa pa mi jefita</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/ticket.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Estilos específicos para la página de actualizaciones */
+        .actualizaciones-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .mensaje-desarrollo {
+            background-color: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid #0081cc;
+        }
+
+        .mensaje-desarrollo h1 {
+            color: #0081cc;
+            font-size: 48px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .mensaje-desarrollo p {
+            color: #666;
+            font-size: 24px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .emoji-construccion {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .boton-regresar {
+            display: inline-block;
+            background-color: #0081cc;
+            color: white;
+            text-decoration: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .boton-regresar:hover {
+            background-color: #00c4ff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,129,204,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .mensaje-desarrollo h1 {
+                font-size: 36px;
+            }
+            
+            .mensaje-desarrollo p {
+                font-size: 20px;
+            }
+            
+            .emoji-construccion {
+                font-size: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mensaje-desarrollo {
+                padding: 40px 20px;
+            }
+            
+            .mensaje-desarrollo h1 {
+                font-size: 28px;
+            }
+            
+            .mensaje-desarrollo p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="titulo">
+            RIFA PA MI JEFITA
+        </div>
+
+        <nav class="btn-group" id="menu">
+            <a href="index.html" class="button">INICIO</a>
+            <a href="info.html" class="button">INFO</a>
+            <a href="rifa.html" class="button">RIFA</a>
+            <a href="actualizaciones.html" class="button">ACTUALIZACIONES</a>
+            <button class="button" id="btnContacto">CONTACTO</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="actualizaciones-container">
+            <div class="mensaje-desarrollo">
+                <div class="emoji-construccion">🚧</div>
+                <h1>Actualizaciones</h1>
+                <p>Seguimos desarrollando esta parte, perdón :(</p>
+                <div style="font-size: 24px; margin: 20px 0;">🔧⚡🛠️</div>
+                <p style="font-size: 18px; color: #999;">Pronto tendremos noticias de la rifa aquí</p>
+                <a href="index.html" class="boton-regresar">← Volver al inicio</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="info-creador">
+            <p>Creado por Francisco Antonio Salgado Leyva</p>
+            <p>© 2026 Rifa pa mi jefita</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Contacto -->
+    <div id="modalContacto" class="modal">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h2>Información de Contacto</h2>
+                <span class="cerrar-modal" onclick="document.getElementById('modalContacto').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>Francisco Antonio Salgado Leyva</strong></p>
+                <p>WhatsApp: 6462616970</p>
+                <p>Correo: tonyjuacker@gmail.com</p>
+                <p>Instagram: me.dicen.tono</p>
+            </div>
+            <div class="modal-footer">
+                <button class="boton-cerrar" onclick="document.getElementById('modalContacto').style.display='none'">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script para el modal de contacto
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnContacto = document.getElementById('btnContacto');
+            const modal = document.getElementById('modalContacto');
+            
+            if (btnContacto && modal) {
+                btnContacto.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    modal.style.display = 'block';
+                });
+            }
+
+            // Cerrar modal con ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modales = document.querySelectorAll('.modal');
+                    modales.forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
